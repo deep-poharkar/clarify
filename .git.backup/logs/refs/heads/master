@@ -1,0 +1,4 @@
+0000000000000000000000000000000000000000 b9c7c242c6da6c4e1f6d2022e69aa4a9c1064305 deep-poharkar <deeppoharkar21@gmail.com> 1740413259 +0530	commit (initial): initial rag and frontend
+b9c7c242c6da6c4e1f6d2022e69aa4a9c1064305 73e1a85fa4a6e38b70c69d518786eaa9d63eb1c1 deep-poharkar <deeppoharkar21@gmail.com> 1740413490 +0530	commit: Save changes before history cleanup
+73e1a85fa4a6e38b70c69d518786eaa9d63eb1c1 3a6a629350aa75315670b69b829936ab8e593df1 deep-poharkar <deeppoharkar21@gmail.com> 1740413490 +0530	filter-branch: rewrite
+3a6a629350aa75315670b69b829936ab8e593df1 c07319aa7be57990676726c8b2c69632e231610f deep-poharkar <deeppoharkar21@gmail.com> 1740413604 +0530	commit: Update .gitignore to properly handle .history directory
