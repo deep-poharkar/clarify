@@ -6,35 +6,39 @@ const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
-    const lastMessage = messages[messages.length - 1];
-
-    // Get relevant docs with fallback handling
-    const relevantDocs = await findRelevantDocuments(lastMessage.content);
+    const { messages, query } = await req.json();
+    console.log('Received query:', query);
     
-    // Extract content and add source metadata
-    const context = relevantDocs.map(doc => {
-      const section = doc.metadata?.section ? `[${doc.metadata.section}] ` : '';
-      return `${section}${doc.content}`;
-    }).join('\n\n');
+    // Get relevant docs specifically for the current query
+    const relevantDocs = await findRelevantDocuments(query);
+    console.log('Retrieved documents count:', relevantDocs.length);
 
-    // More detailed system prompt
-    const systemPrompt = `You are a helpful documentation assistant. Answer questions based ONLY on the provided context. 
-If the context doesn't contain relevant information, say "I don't have enough information to answer this question."
-If you find relevant information, provide a clear and concise answer, citing the specific section when available.
+    // Build context from all relevant documents
+    let context = '';
+    if (relevantDocs && relevantDocs.length > 0) {
+        context = relevantDocs.map(doc => {
+            const source = doc.metadata?.source ? `[Source: ${doc.metadata.source}]` : '';
+            return `${source}\n${doc.content}`;
+        }).join('\n\n---\n\n');
+    }
+
+    // Enhanced system prompt that better utilizes the context
+    const systemPrompt = `You are a knowledgeable AI assistant. Your task is to:
+1. Answer questions based on the provided context
+2. If the context contains relevant information, use it to provide detailed answers
+3. Cite sources when available
+4. Keep responses clear and concise
 
 Context:
 ${context}`;
 
-    // Prepare chat prompt with clear separation
-    const userPrompt = `Question: ${lastMessage.content}
-
-Answer based on the above context:`;
+    // Simplified user prompt
+    const userPrompt = `Question: ${query}`;
 
     // Generate response with combined prompts
     const result = await model.generateContent([
-      { text: systemPrompt },
-      { text: userPrompt }
+        { text: systemPrompt },
+        { text: userPrompt }
     ]);
     
     const response = await result.response;

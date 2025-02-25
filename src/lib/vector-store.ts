@@ -43,27 +43,47 @@ export async function findRelevantDocuments(query: string) {
   try {
     const collection = await db.collection(COLLECTION_NAME);
     
-    // First try vector search
+    // First try vector search with correct syntax
     try {
       const queryVector = await generateEmbedding(query);
-      const results = await collection.find({
-        $vectorSearch: {
-          queryVector,
-          path: "vector",
-          numCandidates: 10,
-          limit: 3
+      const results = await collection.find(
+        {},
+        {
+          sort: {
+            $vector: {
+              vector: queryVector,
+              path: "vector"
+            }
+          },
+          limit: 5
         }
-      }).toArray();
+      ).toArray();
       
+      console.log('Vector search results:', results);
       if (results.length > 0) return results;
     } catch (e) {
-      console.log('Vector search fallback to text search');
+      console.error('Vector search error:', e);
     }
     
-    // Fallback to regular text search if vector search fails
-    return await collection.find({}, { limit: 3 }).toArray();
+    // Simple text search fallback without regex
+    try {
+      const basicResults = await collection.find(
+        {},
+        { limit: 5 }
+      ).toArray();
+      
+      // Client-side filtering for text match
+      const filteredResults = basicResults.filter(doc => 
+        doc.content.toLowerCase().includes(query.toLowerCase())
+      );
+      
+      return filteredResults.length > 0 ? filteredResults : basicResults;
+    } catch (error) {
+      console.error('Text search error:', error);
+      return [];
+    }
   } catch (error) {
     console.error('Find documents error:', error);
-    return [];  // Return empty array instead of throwing
+    return [];
   }
 }

@@ -25,7 +25,7 @@ const Navbar = ({ onChatClick }: NavbarProps) => {
               Chat
             </button>
             <a
-              href="https://github.com/yourusername/documate"
+              href="https://github.com/deep-poharkar/clarify"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-300 hover:text-white transition-colors flex items-center gap-1"
