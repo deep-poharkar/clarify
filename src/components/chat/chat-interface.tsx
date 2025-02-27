@@ -15,6 +15,7 @@ import {
   Text,
   UploadCloud,
 } from "lucide-react";
+import MessageInput from "./message-input"; // Import the new component
 
 const DocsChat = () => {
   const [messages, setMessages] = useState([
@@ -239,13 +240,13 @@ const DocsChat = () => {
     try {
       // Only send recent context to avoid token limits
       const recentMessages = messages.slice(-5); // Keep last 5 messages for context
-      
+
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           messages: [...recentMessages, userMessage],
-          query: input // Send the actual query separately
+          query: input, // Send the actual query separately
         }),
       });
 
@@ -535,31 +536,14 @@ const DocsChat = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Chat Input with Add Doc Button */}
-            <form onSubmit={handleSubmit} className="flex gap-2">
-              <Button
-                type="button"
-                onClick={() => setShowDocInput(true)}
-                className="bg-slate-800 hover:bg-slate-700 rounded-full w-10 h-10 p-0 flex items-center justify-center"
-              >
-                <Plus size={20} />
-              </Button>
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask a question..."
-                disabled={isLoading}
-                className="bg-slate-900 border-gray-800"
-              />
-              <Button
-                type="submit"
-                disabled={isLoading || !input.trim()}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                <Send className="mr-2" />
-                Send
-              </Button>
-            </form>
+            {/* Use the MessageInput component */}
+            <MessageInput
+              input={input}
+              setInput={setInput}
+              isLoading={isLoading}
+              handleSubmit={handleSubmit}
+              setShowDocInput={setShowDocInput}
+            />
           </CardContent>
         </Card>
       </div>

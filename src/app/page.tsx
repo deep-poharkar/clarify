@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import DocsChat from "@/components/chat/chat-interface";
 import React, { useState } from "react";
 import { Spotlight } from "../components/ui/spotlight";
@@ -9,10 +8,15 @@ import Navbar from "@/components/ui/navbar";
 export default function Home() {
   const [showChat, setShowChat] = useState(false);
 
+  const handleChatClick = () => {
+    setShowChat(true);
+  };
+
   if (showChat) {
     return (
       <>
-        <Navbar />
+        <Navbar onChatClick={handleChatClick} />{" "}
+        {/* Pass the onChatClick prop */}
         <DocsChat />
       </>
     );
@@ -20,7 +24,7 @@ export default function Home() {
 
   return (
     <>
-      <Navbar />
+      <Navbar onChatClick={handleChatClick} /> {/* Pass the onChatClick prop */}
       <div className="min-h-screen w-full rounded-md flex md:items-center md:justify-center bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
         <Spotlight
           className="-top-40 left-0 md:left-60 md:-top-20"
@@ -28,11 +32,12 @@ export default function Home() {
         />
         <div className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-0">
           <h1 className="text-4xl md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50">
-            Ask your <br /> documentation.
+            Ask your <br /> Documentation.
           </h1>
           <p className="mt-4 font-normal text-base text-neutral-300 max-w-lg text-center mx-auto">
-            Ask your documentation. Get instant answers from your documentation
-            using AI.
+            Get instant answers from your documentation using AI. Our
+            RAG-powered architecture processes the context from your uploaded
+            documentation to deliver the most relevant answers possible.
           </p>
           <div className="flex justify-center mt-6">
             <button
@@ -46,6 +51,39 @@ export default function Home() {
             </button>
           </div>
         </div>
+
+        {/* Footer */}
+        <footer className="absolute bottom-0 w-full py-4 text-center text-neutral-400 text-sm">
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-center space-x-4">
+              <a
+                href="https://github.com/deep-poharkar"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                GitHub
+              </a>
+              <a
+                href="https://linkedin.com/in/deep-poharkar"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                LinkedIn
+              </a>
+              <a
+                href="mailto:deeppoharkar21@gmail.com"
+                className="hover:text-white transition-colors"
+              >
+                Email
+              </a>
+            </div>
+            <div>
+              © {new Date().getFullYear()} Clarify. All rights reserved.
+            </div>
+          </div>
+        </footer>
       </div>
     </>
   );
