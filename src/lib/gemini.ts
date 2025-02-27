@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai':
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 if (!process.env.GEMINI_API_KEY) {
   throw new Error('Missing GEMINI_API_KEY environment variable');
@@ -13,7 +13,7 @@ export async function generateEmbedding(text: string) {
 }
 
 export async function generateChatResponse(
-  messages: { role: string; content: string }[],
+  messages: Array<{ role: string; content: string }>,
   context?: string
 ) {
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
@@ -29,5 +29,6 @@ export async function generateChatResponse(
     : 'Respond as a mental health chatbot that is empathetic and helpful.';
 
   const result = await chat.sendMessage(prompt);
+
   return result.response;
 }
