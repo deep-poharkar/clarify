@@ -32,6 +32,27 @@ async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 // Store document with vector embedding
+// Helper function to split text into chunks
+function splitIntoChunks(text: string, maxSize: number): string[] {
+  const chunks: string[] = [];
+  let currentChunk = '';
+  
+  // Split by sentences for more natural chunks
+  const sentences = text.split(/(?<=[.!?])\s+/);
+  
+  for (const sentence of sentences) {
+    if ((currentChunk + sentence).length <= maxSize) {
+      currentChunk += (currentChunk ? ' ' : '') + sentence;
+    } else {
+      if (currentChunk) chunks.push(currentChunk);
+      currentChunk = sentence;
+    }
+  }
+  
+  if (currentChunk) chunks.push(currentChunk);
+  return chunks;
+}
+
 export async function storeDocument(content: string, metadata: any = {}) {
   try {
     if (!content || content.trim() === '') {
